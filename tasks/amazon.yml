@@ -12,4 +12,5 @@
       - unzip
       - ca-certificates
       - amazon-efs-utils
+      - python3-pip
     state: present

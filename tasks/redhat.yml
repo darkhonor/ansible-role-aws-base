@@ -26,5 +26,6 @@
       - net-tools
       - unzip
       - ca-certificates
+      - python3-pip
       - amazon-efs-utils
     state: present
