@@ -1,2 +1,6 @@
 ---
 # defaults file for ansible-role-aws-base
+# RHEL Defaults
+rhsm_username: SomeUser
+rhsm_password: SomePassword
+rhsm_pool_id: SOmeReallyLongObscurePoolId
