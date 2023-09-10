@@ -1,1 +1,13 @@
 ---
+- name: Update the guest operating system
+  ansible.builtin.apt:
+    force_apt_get: true
+    name: "*"
+    state: latest
+    update_cache: true
+- name: Add Additional Required Packages
+  ansible.builtin.apt:
+    pkg:
+      - wget
+      - curl
+      - amazon-efs-utils

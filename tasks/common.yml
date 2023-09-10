@@ -1,1 +1,6 @@
 ---
+- name: Add required PIP modules
+  ansible.builtin.pip:
+    name:
+      - boto3
+      - botocore
