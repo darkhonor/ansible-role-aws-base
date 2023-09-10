@@ -8,7 +8,6 @@
   ansible.builtin.dnf:
     name:
       - wget
-      - curl
       - net-tools
       - unzip
       - ca-certificates
