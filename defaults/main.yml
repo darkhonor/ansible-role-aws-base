@@ -4,3 +4,7 @@
 rhsm_username: SomeUser
 rhsm_password: SomePassword
 rhsm_pool_id: SOmeReallyLongObscurePoolId
+efs_utils_package: amazon-efs-utils-1.35.0-1.el8.noarch.rpm
+efs_utils_checksum: 7197801f3f37f6839927ec4470ea1c2b292ac009913f00c91a8e9afbcf922bd9
+s3_source: true
+s3_bucket: S3BucketSource

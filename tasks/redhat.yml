@@ -27,5 +27,11 @@
       - unzip
       - ca-certificates
       - python3-pip
-      - amazon-efs-utils
     state: present
+- name: Download Package
+  ansible.builtin.dnf:
+    name: "https://{{ s3_bucket }}.s3.{{ s3_region }}.amazonaws.com/{{ efs_utils_package }}"
+    disable_gpg_check: true
+    state: present
+  when:
+    s3_bucket
