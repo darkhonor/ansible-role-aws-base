@@ -46,4 +46,5 @@
 - name: Install EFS Utils Package
   ansible.builtin.dnf:
     name: "/root/{{ efs_utils_package }}"
+    disable_gpg_check: true
     state: present
