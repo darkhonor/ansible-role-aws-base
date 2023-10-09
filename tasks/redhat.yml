@@ -28,15 +28,19 @@
       - ca-certificates
       - python3-pip
     state: present
-- name: Download EFS Utils Package
-  ansible.builtin.get_url:
-    url: "https://{{ s3_bucket }}.s3.{{ s3_region }}.amazonaws.com/{{ efs_utils_package }}"
-    dest: "/root"
-    checksum: "sha256:{{ efs_utils_checksum }}"
-    mode: '0644'
-  when:
-    s3_source
-- name: Install EFS Utils Package
-  ansible.builtin.dnf:
-    name: "/root/{{ efs_utils_package }}"
-    state: present
+- name: Install AWS CLI Package
+  ansible.builtin.pip:
+    name: awscli
+    
+# - name: Download EFS Utils Package
+#   ansible.builtin.get_url:
+#     url: "https://{{ s3_bucket }}.s3.{{ s3_region }}.amazonaws.com/{{ efs_utils_package }}"
+#     dest: "/root"
+#     checksum: "sha256:{{ efs_utils_checksum }}"
+#     mode: '0644'
+#   when:
+#     s3_source
+# - name: Install EFS Utils Package
+#   ansible.builtin.dnf:
+#     name: "/root/{{ efs_utils_package }}"
+#     state: present
