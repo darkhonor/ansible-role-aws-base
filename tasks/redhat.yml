@@ -30,17 +30,20 @@
     state: present
 - name: Install AWS CLI Package
   ansible.builtin.pip:
-    name: awscli
-    
-# - name: Download EFS Utils Package
-#   ansible.builtin.get_url:
-#     url: "https://{{ s3_bucket }}.s3.{{ s3_region }}.amazonaws.com/{{ efs_utils_package }}"
-#     dest: "/root"
-#     checksum: "sha256:{{ efs_utils_checksum }}"
-#     mode: '0644'
-#   when:
-#     s3_source
-# - name: Install EFS Utils Package
-#   ansible.builtin.dnf:
-#     name: "/root/{{ efs_utils_package }}"
-#     state: present
+    name: 
+      - awscli
+      - boto3
+      - botocore
+- name: Download EFS Utils Package
+  amazon.aws.s3_object:
+    region: '{{ s3_region }}'
+    bucket: '{{ s3_bucket }}'
+    object: '{{ efs_utils_package }}'
+    dest: "/root/{{ efs_utils_package }}"
+    mode: get
+  when:
+    s3_source
+- name: Install EFS Utils Package
+  ansible.builtin.dnf:
+    name: "/root/{{ efs_utils_package }}"
+    state: present
