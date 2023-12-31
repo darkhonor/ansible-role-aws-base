@@ -4,6 +4,7 @@
     name:
       - boto3
       - botocore
+
 - name: Download K3s install script
   ansible.builtin.get_url:
     url: https://get.k3s.io/
@@ -11,7 +12,8 @@
     dest: /usr/local/bin/k3s-install.sh
     owner: root
     group: root
-    mode: 0755
+    mode: 0750
+
 - name: Enable IPv4 forwarding
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
@@ -25,3 +27,102 @@
     value: "1"
     state: present
     reload: true
+
+- name: Add IPVS Required Modules
+  ansible.builtin.blockinfile:
+    path: /etc/modules-load.d/ipvs.conf
+    prepend_newline: true
+    insertafter: EOF
+    marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+    block: |
+      ip_vs
+      ip_vs_rr
+      ip_vs_wrr
+      ip_vs_sh
+      nf_conntrack_ipv4
+
+- name: Download Helm install script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    timeout: 120
+    dest: /usr/local/bin/get_helm.sh
+    owner: root
+    group: root
+    mode: 0750
+
+###
+## K3S CIS Hardening: Ensure protect-kernel-defaults is set
+##
+- name: CIS Hardening, protect-kernel-defaults
+  ansible.builtin.blockinfile:
+    path: /etc/sysctl.d/90-kubelet.conf
+    prepend_newline: true
+    insertafter: EOF
+    marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+    block: |
+      vm.panic_on_oom=0
+      vm.overcommit_memory=1
+      kernel.panic=10
+      kernel.panic_on_oops=1
+
+###
+## K3S CIS Hardening: Secure Configuration File Components
+##
+- name: Ensure K3S Configuration Directory exists
+  ansible.builtin.file: 
+    path: /etc/rancher/k3s
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory 
+
+- name: Create K3S Secure Configuration File
+  ansible.builtin.blockinfile:
+    path: /etc/rancher/k3s/config.yaml
+    prepend_newline: true
+    insertbefore: BOF
+    marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+    block: |
+      protect-kernel-defaults: true
+      secrets-encryption: true
+      kube-apiserver-arg:
+        - 'admission-control-config-file=/var/lib/rancher/k3s/server/psa.yaml'
+        - 'audit-log-path=/var/lib/rancher/k3s/server/logs/audit.log'
+        - 'audit-policy-file=/var/lib/rancher/k3s/server/audit.yaml'
+        - 'audit-log-maxage=30'
+        - 'audit-log-maxbackup=10'
+        - 'audit-log-maxsize=100'
+        - 'request-timeout=300s'
+        - 'service-account-lookup=true'
+      kube-controller-manager-arg:
+        - 'terminated-pod-gc-threshold=10'
+        - 'use-service-account-credentials=true'
+      kubelet-arg:
+        - 'streaming-connection-idle-timeout=5m'
+        - 'make-iptables-util-chains=true'
+      kube-proxy-arg:
+        - proxy-mode=ipvs
+        - ipvs-strict-arp=true
+
+###
+## K3S CIS Hardening: Audit Log Directory
+##
+- name: Ensure K3S Audit Log Directory exists
+  ansible.builtin.file: 
+    path: /etc/rancher/k3s/server/logs
+    owner: root
+    group: root
+    mode: '0700'
+    state: directory 
