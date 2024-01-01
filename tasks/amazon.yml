@@ -44,3 +44,13 @@
   loop:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
+
+- name: Download FIPS Cloudflare Tunnel Package
+  ansible.builtin.get_url:
+    url: https://github.com/cloudflare/cloudflared/releases/download/2023.10.0/cloudflared-fips-linux-x86_64.rpm
+    timeout: 120
+    dest: /tmp/cloudflared.rpm
+    owner: root
+    group: root
+    mode: 0644
+    checksum: sha256:d79111ec8fa3659c887dd4e82f8ce6ff39391de6860ca0c2045469d6ab76a44f
