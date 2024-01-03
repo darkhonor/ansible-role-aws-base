@@ -15,6 +15,7 @@
       - python3-pip
       - container-selinux
       - iptables-nft
+      - https://github.com/k3s-io/k3s-selinux/releases/download/v1.4.stable.1/k3s-selinux-1.4-1.el8.noarch.rpm
     state: present
 - name: Add /usr/local/bin to sudo secure_path
   ansible.builtin.lineinfile:

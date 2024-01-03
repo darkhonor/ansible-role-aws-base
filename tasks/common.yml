@@ -121,8 +121,24 @@
 ##
 - name: Ensure K3S Audit Log Directory exists
   ansible.builtin.file: 
-    path: /etc/rancher/k3s/server/logs
+    path: /var/lib/rancher/k3s/server/logs
     owner: root
     group: root
     mode: '0700'
     state: directory 
+
+- name: Create Baseline Cluster Audit Policy
+  ansible.builtin.template:
+    src: "audit.yaml.j2"
+    dest:  /var/lib/rancher/k3s/server/audit.yaml
+    owner: root
+    group: root 
+    mode: '0644'
+
+- name: Create Baseline Cluster Pod Security Admission Policy 
+  ansible.builtin.template:
+    src: "psa.yaml.j2"
+    dest: /var/lib/rancher/k3s/server/psa.yaml
+    owner: root
+    group: root 
+    mode: '0644'
