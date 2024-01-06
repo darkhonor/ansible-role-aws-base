@@ -31,7 +31,6 @@
 - name: Add IPVS Required Modules
   ansible.builtin.blockinfile:
     path: /etc/modules-load.d/ipvs.conf
-    prepend_newline: true
     insertafter: EOF
     marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
     create: true
@@ -60,7 +59,6 @@
 - name: CIS Hardening, protect-kernel-defaults
   ansible.builtin.blockinfile:
     path: /etc/sysctl.d/90-kubelet.conf
-    prepend_newline: true
     insertafter: EOF
     marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
     create: true
@@ -87,7 +85,6 @@
 - name: Create K3S Secure Configuration File
   ansible.builtin.blockinfile:
     path: /etc/rancher/k3s/config.yaml
-    prepend_newline: true
     insertbefore: BOF
     marker:  "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
     create: true
