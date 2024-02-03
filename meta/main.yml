@@ -18,6 +18,9 @@ galaxy_info:
   - name: Amazon Linux
     versions:
     - '2023'
+  - name: Ubuntu
+    versions:
+      - "all"
 
   galaxy_tags:
     - "aws"

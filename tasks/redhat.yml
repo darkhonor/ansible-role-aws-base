@@ -40,14 +40,14 @@
   amazon.aws.s3_object:
     region: '{{ s3_region }}'
     bucket: '{{ s3_bucket }}'
-    object: '{{ efs_utils_package }}'
-    dest: "/root/{{ efs_utils_package }}"
+    object: '{{ efs_utils_rpm_package }}'
+    dest: "/root/{{ efs_utils_rpm_package }}"
     mode: get
   when:
     s3_source
 - name: Install EFS Utils Package
   ansible.builtin.dnf:
-    name: "/root/{{ efs_utils_package }}"
+    name: "/root/{{ efs_utils_rpm_package }}"
     disable_gpg_check: true
     state: present
 - name: Add /usr/local/bin to sudo secure_path

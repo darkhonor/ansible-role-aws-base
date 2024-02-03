@@ -10,13 +10,54 @@
     pkg:
       - wget
       - curl
-      - amazon-efs-utils
       - iptables
+- name: Download EFS Utils Package
+  amazon.aws.s3_object:
+    region: '{{ s3_region }}'
+    bucket: '{{ s3_bucket }}'
+    object: '{{ efs_utils_deb_package }}'
+    dest: "/root/{{ efs_utils_deb_package }}"
+    mode: get
+  when:
+    s3_source
+- name: Install EFS Utils Package
+  ansible.builtin.apt:
+    deb: "/root/{{ efs_utils_deb_package }}"
+    state: present
 - name: Install Dependent Ubuntu Packages
   when: ansible_distribution in ['Ubuntu']
   ansible.builtin.apt:
     name: policycoreutils  # Used by install script to restore SELinux context
     update_cache: yes
+
+- name: Add /usr/local/bin to sudo secure_path
+  ansible.builtin.lineinfile:
+    line: 'Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin'
+    regexp: "Defaults(\\s)*secure_path(\\s)*="
+    state: present
+    insertafter: EOF
+    path: /etc/sudoers
+    validate: 'visudo -cf %s'
+- name: Add br_netfilter to /etc/modules-load.d/
+  ansible.builtin.copy:
+    content: "br_netfilter"
+    dest: /etc/modules-load.d/br_netfilter.conf
+    mode: "u=rw,g=,o="
+
+- name: Load br_netfilter
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Set bridge-nf-call-iptables (just to be sure)
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: true
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
 
 - name: Download FIPS Cloudflare Tunnel Package
   ansible.builtin.get_url:
