@@ -88,3 +88,28 @@
     group: root
     mode: 0644
     checksum: sha256:d79111ec8fa3659c887dd4e82f8ce6ff39391de6860ca0c2045469d6ab76a44f
+
+- name: Add Tailscale repository
+  ansible.builtin.yum_repository:
+    name: tailscale
+    description: Tailscale
+    baseurl: https://pkgs.tailscale.com/stable/rhel/8/$basearch
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://pkgs.tailscale.com/stable/rhel/8/repo.gpg
+
+- name: Install Tailscale Repo Key
+  ansible.builtin.rpm_key:
+    key: https://pkgs.tailscale.com/stable/rhel/8/repo.gpg
+    state: present
+
+- name: Install Tailscale Package
+  ansible.builtin.dnf:
+    name: tailscale
+    state: present
+
+- name: Disable Tailscale Service on AMI
+  ansible.builtin.service:
+    name: tailscaled
+    enabled: false
+    state: stopped
