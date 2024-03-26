@@ -11,6 +11,13 @@
       - wget
       - curl
       - iptables
+      - python3-pip
+- name: Install AWS CLI Package
+  ansible.builtin.pip:
+    name: 
+      - awscli
+      - boto3
+      - botocore
 - name: Download EFS Utils Package
   amazon.aws.s3_object:
     region: '{{ s3_region }}'
@@ -61,10 +68,10 @@
 
 - name: Download FIPS Cloudflare Tunnel Package
   ansible.builtin.get_url:
-    url: https://github.com/cloudflare/cloudflared/releases/download/2023.10.0/cloudflared-fips-linux-amd64.deb
+    url: https://github.com/cloudflare/cloudflared/releases/download/2024.1.5/cloudflared-fips-linux-amd64.deb
     timeout: 120
     dest: /tmp/cloudflared.deb
     owner: root
     group: root
     mode: 0644
-    checksum: sha256:569b8925a41bd1426fc9f88a4d00aa93da747ed4a5ec1c638678ac62ae1a7114
+    checksum: sha256:5fc704b27f591e5befb9584d6505c4ae24daf9cb83ccc5dff621f7e1bc69a2dc
