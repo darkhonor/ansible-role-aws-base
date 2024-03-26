@@ -81,7 +81,7 @@
 
 - name: Download FIPS Cloudflare Tunnel Package
   ansible.builtin.get_url:
-    url: https://github.com/cloudflare/cloudflared/releases/download/2023.10.0/cloudflared-fips-linux-x86_64.rpm
+    url: https://github.com/cloudflare/cloudflared/releases/download/2024.3.0/cloudflared-fips-linux-x86_64.rpm
     timeout: 120
     dest: /tmp/cloudflared.rpm
     owner: root
