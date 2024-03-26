@@ -22,7 +22,7 @@
       - python3-pip
       - container-selinux
       - iptables-nft
-      - https://github.com/k3s-io/k3s-selinux/releases/download/v1.4.stable.1/k3s-selinux-1.4-1.el8.noarch.rpm
+      - https://github.com/k3s-io/k3s-selinux/releases/download/v1.5.stable.1/k3s-selinux-1.5-1.el8.noarch.rpm
     state: present
 - name: Add /usr/local/bin to sudo secure_path
   ansible.builtin.lineinfile:
@@ -62,3 +62,7 @@
     gpgcheck: true
     gpgkey: https://pkg.cloudflare.com/cloudflare-ascii-pubkey.gpg
 
+- name: Install Cloudflared Repo Key
+  ansible.builtin.rpm_key:
+    key: https://pkg.cloudflare.com/cloudflare-ascii-pubkey.gpg
+    state: present
